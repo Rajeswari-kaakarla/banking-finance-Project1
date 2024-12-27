@@ -1,0 +1,42 @@
+pipeline{
+    agent any
+    stages{
+        stage('checkout the code from github'){
+            steps{
+                 git url: 'https://github.com/sairamana33/banking-finance-project/'
+                 echo 'github url checkout'
+            }
+        }
+        stage('codecompile with sai'){
+            steps{
+                echo 'starting compiling'
+                sh 'mvn compile'
+            }
+        }
+        stage('codetesting with sai'){
+            steps{
+                sh 'mvn test'
+            }
+        }
+        stage('qa with sai'){
+            steps{
+                sh 'mvn checkstyle:checkstyle'
+            }
+        }
+        stage('package with sai'){
+            steps{
+                sh 'mvn package'
+            }
+        }
+        stage('run dockerfile'){
+          steps{
+               sh 'docker build -t kaakarla/bankingproject:1 .'
+           }
+         }
+        stage('Deploy the project'){
+          steps{
+               sh 'docker run -d -p kaakarla/bankingproject:1'
+           }
+        }
+    }
+}
