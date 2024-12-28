@@ -36,6 +36,23 @@ pipeline{
           steps{
                sh 'docker build -t kaakarla/bankingproject:1 .'
            }
-         }    
+        }
+        stage('Login to dockerhub and push the file'){
+            steps{
+                withCredentials([string(credentialsId: 'docker', variable: 'dockerhub')]) {
+                sh 'docker login -u kaakarla -p ${dockerhub}'
+                }
+            }
+        }
+        stage('push image to dockerhub'){
+          steps{
+               sh 'docker push kaakarla/bankingproject:1'
+           }
+        }
+        stage('Deploy the ansible'){
+           steps{
+            ansiblePlaybook become: true, credentialsId: 'ansible', disableHostKeyChecking: true, installation: 'Ansible', inventory: '/etc/ansible/hosts', playbook: 'ansible-playbook.yml', sudoUser: null, vaultTmpPath: ''
+           }
+        }
     }
 }
