@@ -1,5 +1,9 @@
 pipeline{
     agent any
+    
+    tools{
+        maven 'maven'
+    }
     stages{
         stage('checkout the code from github'){
             steps{
@@ -7,23 +11,23 @@ pipeline{
                  echo 'github url checkout'
             }
         }
-        stage('codecompile with sai'){
+        stage('codecompile with raji'){
             steps{
                 echo 'starting compiling'
                 sh 'mvn compile'
             }
         }
-        stage('codetesting with sai'){
+        stage('codetesting with raji'){
             steps{
                 sh 'mvn test'
             }
         }
-        stage('qa with sai'){
+        stage('qa with raji'){
             steps{
                 sh 'mvn checkstyle:checkstyle'
             }
         }
-        stage('package with sai'){
+        stage('package with raji'){
             steps{
                 sh 'mvn package'
             }
@@ -32,11 +36,6 @@ pipeline{
           steps{
                sh 'docker build -t kaakarla/bankingproject:1 .'
            }
-         }
-        stage('Deploy the project'){
-          steps{
-               sh 'docker run -d -p kaakarla/bankingproject:1'
-           }
-        }
+         }    
     }
 }
